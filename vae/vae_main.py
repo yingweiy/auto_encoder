@@ -37,14 +37,15 @@ class VAE_Model(nn.Module):
 
     # Reconstruction + KL divergence losses summed over all elements and batch
     def loss(self, recon_x, x):
-        BCE = F.binary_cross_entropy(recon_x, x.view(-1, self.input_dim), reduction='sum')
+        err = F.binary_cross_entropy(recon_x, x.view(-1, self.input_dim), reduction='sum')
+        #err = F.mse_loss(recon_x, x.view(-1, self.input_dim))
         KLD = -0.5 * torch.sum(1 + self.logvar - self.mu.pow(2) - self.logvar.exp())
-        return BCE + KLD
+        return err + KLD
 
 class VAE():
     def __init__(self):
         self.batch_size = 128
-        self.epochs = 30
+        self.epochs = 10
         self.seed = 1
         self.log_interval = 10
         self.learning_rate = 1e-3
